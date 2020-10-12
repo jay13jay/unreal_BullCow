@@ -1,0 +1,11 @@
+{
+	"files.exclude": {
+		"/Users/jhax/Projects/Unreal/BullCow/.vscode": true,
+		"/Users/jhax/Projects/Unreal/BullCow/BullCowGame.xcworkspace": true,
+		"/Users/jhax/Projects/Unreal/BullCow/Content": true,
+		"/Users/jhax/Projects/Unreal/BullCow/DerivedDataCache": true,
+		"/Users/jhax/Projects/Unreal/BullCow/Intermediate": true,
+		"/Users/jhax/Projects/Unreal/BullCow/Saved": true,
+		"/Users/jhax/Projects/Unreal/BullCow/supporting_files": true
+	}
+}
