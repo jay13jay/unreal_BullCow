@@ -1,8 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "BullCowCartridge.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
 
 void UBullCowCartridge::BeginPlay(){ // When the game starts
     Super::BeginPlay();
+
+    // Load wordlist from directory
+    const FString WordListPath = FPaths::ProjectContentDir() / TEXT("WordLists/HiddenWordList.txt");
+    FFileHelper::LoadFileToStringArray(Words, *WordListPath);
+
     SetupGame();
 }
 
@@ -26,21 +33,20 @@ void UBullCowCartridge::OnInput(const FString& Input){ // When the player hits e
 }
 
 void UBullCowCartridge::SetupGame(){
-    DEBUG = false;
+    DEBUG = true;
     HiddenWord = TEXT("cakes");
     Lives = HiddenWord.Len();
     bGameOver = false;
     WelcomeMsg();
-
-    int32 i = 0;
-    while (i < 5) {
-        PrintLine(TEXT("While Counter: %i"), i);
-        i++;
+    PrintLine(TEXT("There are %i words in the list"), Words.Num());
+    PrintLine(TEXT("Wordlist: "), Words.Num());
+    for(int32 Index = 0; Index < Words.Num(); Index++) {
+        PrintLine(TEXT("\t %s"), *Words[Index]);
     }
 
-    for (int32 x = 0; x < 5; x++){
-        PrintLine(TEXT("For Counter: %i"), x);
-    }
+    // PrintLine(TEXT("Length of wordlist: %i"), Words.Num());
+    // PrintLine(Words[0]);
+
 }
 
 void UBullCowCartridge::WelcomeMsg(){
@@ -64,9 +70,11 @@ void UBullCowCartridge::ProcessGuess(FString Guess){
 
     // Check If Isogram
     if(!IsIsogram(Guess)){
-        PrintLine(TEXT("Word is NOT an isogram, Try Again!"));
         return;
     }
+    // if(!IsIsogram2(Guess)){
+    //     return;
+    // }
     
     // Check Right Number Of Characters
     if (Guess.Len() != HiddenWord.Len()){
@@ -109,15 +117,16 @@ void UBullCowCartridge::EndGame(){
     return;
 }
 
-bool UBullCowCartridge::IsIsogram(FString Guess) const{
+bool UBullCowCartridge::IsIsogram(FString Word) const{
     // TIP: we do not need to check for 0/1 letter words, since the code below works anyway
     std::bitset<256> SeenLetters;
     static_assert(sizeof(std::bitset<256>) == 32, "");
 
-    for (auto Letter : Guess)
+    for (auto Letter : Word)
     {
         char LowercaseLetter = tolower(Letter);
         if (SeenLetters[LowercaseLetter]) { // if seeen letters contains current letter
+            PrintLine(TEXT("Letter Match Found! NOT an Isogram"));
             return false; // its not an isogram
         }
 
@@ -125,6 +134,21 @@ bool UBullCowCartridge::IsIsogram(FString Guess) const{
         // TIP: we do not need else here, since return exits the function as well as the for loop
         SeenLetters[LowercaseLetter] = true;
     }
-
+    PrintLine(TEXT("All letters checked, word IS an isogram"));
     return true; // no letters seen twice
+}
+
+bool UBullCowCartridge::IsIsogram2(FString Word) const{
+    // check isogram
+    for(int32 Index = 0; Index < Word.Len(); Index++){
+        for (int32 Check = Index+1; Check < Word.Len(); Check++){
+            if(Word[Index] == Word[Check]){
+                PrintLine(TEXT("Checking Letter %i against %i"), Index, Check);
+                PrintLine(TEXT("Letter Match Found! NOT an Isogram"));
+                return false;
+            }
+        }
+    }
+    PrintLine(TEXT("All letters checked, word IS an isogram"));
+    return true;
 }

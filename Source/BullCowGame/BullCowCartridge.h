@@ -22,7 +22,8 @@ class BULLCOWGAME_API UBullCowCartridge : public UCartridge
 	void EndGame();
 	void DeductLife();
 	void ProcessGuess(FString Guess);
-	bool IsIsogram(FString Guess) const;
+	bool IsIsogram(FString Word) const;
+	bool IsIsogram2(FString Word) const;
 
 	// Your declarations go below!
 	private:
@@ -30,4 +31,5 @@ class BULLCOWGAME_API UBullCowCartridge : public UCartridge
 	int32 DEBUG; // Toggle debug messages
 	int32 Lives; // Number of guesses
 	FString HiddenWord; // Winning word	
+	TArray<FString> Words;
 };
