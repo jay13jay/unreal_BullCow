@@ -31,6 +31,16 @@ void UBullCowCartridge::SetupGame(){
     Lives = HiddenWord.Len();
     bGameOver = false;
     WelcomeMsg();
+
+    int32 i = 0;
+    while (i < 5) {
+        PrintLine(TEXT("While Counter: %i"), i);
+        i++;
+    }
+
+    for (int32 x = 0; x < 5; x++){
+        PrintLine(TEXT("For Counter: %i"), x);
+    }
 }
 
 void UBullCowCartridge::WelcomeMsg(){
