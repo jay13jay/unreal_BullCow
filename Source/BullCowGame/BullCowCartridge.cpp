@@ -24,22 +24,6 @@ void UBullCowCartridge::OnInput(const FString& Input){ // When the player hits e
     if(DEBUG == true){
         DebugMsg();
     }
-
-    
-    // Check If Isogram
-    // Prompt To Guess Again
-    // Check Right Number Of Characters
-    // Prompt To Guess Again
-
-    // Remove Life
-
-    // Check If Lives > 0
-    // If Yes GuessAgain
-    // Show Lives Left
-    // If No Show GameOver and HiddenWord?
-    // Prompt To Play Again, Press Enter To Play Again?
-    // Check User Input
-    // PlayAgain Or Quit
 }
 
 void UBullCowCartridge::SetupGame(){
@@ -66,18 +50,46 @@ void UBullCowCartridge::ProcessGuess(FString Guess){
         PrintLine(TEXT("You have won!"));
         EndGame();
     }
-    else if (Guess.Len() != HiddenWord.Len()){
-        PrintLine(TEXT("The hidden word is %i characters long, try again!"), HiddenWord.Len());
+
+    // Check If Isogram
+    if(IsIsogram(Guess)){
+        PrintLine(TEXT("Word is an isogram"));
+        return;
     }
-    else if (Guess.Len() == HiddenWord.Len()){
+    else{
+        PrintLine(TEXT("NOT an isogram"));
+        return;
+    }
+    // Prompt To Guess Again
+    // Check Right Number Of Characters
+    // Prompt To Guess Again
+
+    // Remove Life
+
+    // Check If Lives > 0
+    // If Yes GuessAgain
+    // Show Lives Left
+    // If No Show GameOver and HiddenWord?
+    // Prompt To Play Again, Press Enter To Play Again?
+    // Check User Input
+    // PlayAgain Or Quit
+
+    if (Guess.Len() != HiddenWord.Len()){
+        PrintLine(TEXT("The hidden word is %i characters long, try again!"), HiddenWord.Len());
+        return;
+    }
+    
+    if (Guess.Len() == HiddenWord.Len()){
         PrintLine(TEXT("Wrong word, but guess was correct length"));
         
         if(Lives > 0){
             DeductLife();
+            return;
         }
         else{
             PrintLine(TEXT("You have lost!"));
             EndGame();
+            return;
         }
     }
 }
@@ -94,4 +106,25 @@ void UBullCowCartridge::DeductLife(){
 void UBullCowCartridge::EndGame(){
     PrintLine(TEXT("Resetting game"));
     SetupGame();
+}
+
+bool UBullCowCartridge::IsIsogram(FString Guess){
+    // TIP: we do not need to check for 0/1 letter words, since the code below works anyway
+    // less code = less things to worry about :)
+    std::bitset<256> SeenLetters;
+    static_assert(sizeof(std::bitset<256>) == 32, "");
+
+    for (auto Letter : Guess)
+    {
+        char LowercaseLetter = tolower(Letter);
+        if (SeenLetters[LowercaseLetter]) { // if seeen letters contains current letter
+            return false; // its not an isogram
+        }
+
+        // otherwise add current letter to seen letters
+        // TIP: we do not need else here, since return exits the function as well as the for loop
+        SeenLetters[LowercaseLetter] = true;
+    }
+
+    return true; // no letters seen twice
 }

@@ -22,6 +22,7 @@ class BULLCOWGAME_API UBullCowCartridge : public UCartridge
 	void EndGame();
 	void DeductLife();
 	void ProcessGuess(FString Guess);
+	bool IsIsogram(FString Guess);
 
 	// Your declarations go below!
 	private:
