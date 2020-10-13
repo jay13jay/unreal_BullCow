@@ -53,13 +53,11 @@ void UBullCowCartridge::ProcessGuess(FString Guess){
     }
 
     // Check If Isogram
-    if(IsIsogram(Guess)){
-        PrintLine(TEXT("Word is an isogram"));
-    }
-    else{
-        PrintLine(TEXT("NOT an isogram"));
+    if(!IsIsogram(Guess)){
+        PrintLine(TEXT("Word is NOT an isogram, Try Again!"));
         return;
     }
+    
     // Check Right Number Of Characters
     if (Guess.Len() != HiddenWord.Len()){
         PrintLine(TEXT("The hidden word is %i characters long, try again!"), HiddenWord.Len());
@@ -83,12 +81,6 @@ void UBullCowCartridge::ProcessGuess(FString Guess){
             return;
         }
     }
-
-    // If No Show GameOver and HiddenWord?
-    // Prompt To Play Again, Press Enter To Play Again?
-    // Check User Input
-    // PlayAgain Or Quit
-    
 }
 
 void UBullCowCartridge::DebugMsg(){
@@ -107,9 +99,8 @@ void UBullCowCartridge::EndGame(){
     return;
 }
 
-bool UBullCowCartridge::IsIsogram(FString Guess){
+bool UBullCowCartridge::IsIsogram(FString Guess) const{
     // TIP: we do not need to check for 0/1 letter words, since the code below works anyway
-    // less code = less things to worry about :)
     std::bitset<256> SeenLetters;
     static_assert(sizeof(std::bitset<256>) == 32, "");
 
