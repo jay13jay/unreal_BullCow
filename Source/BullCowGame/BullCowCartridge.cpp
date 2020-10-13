@@ -1,75 +1,97 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "BullCowCartridge.h"
 
+void UBullCowCartridge::BeginPlay(){ // When the game starts
 
-void UBullCowCartridge::BeginPlay() // When the game starts
-{
-    InitGame(); // set the game up
     Super::BeginPlay();
-    WelcomeMsg();
+    SetupGame();
 
-    if(DEBUG == 1){
-        DebugMsg();
-    }
 }
 
-void UBullCowCartridge::OnInput(const FString& Input) // When the player hits enter
-{
+void UBullCowCartridge::OnInput(const FString& Input){ // When the player hits enter
     ClearScreen();
-    // check if entered word matches HiddenWord
-    if (Input == HiddenWord){ // print winning message
-        PrintLine(FString::Printf(TEXT("Hidden Word was: %s"), *HiddenWord));
-        PrintLine(TEXT("Answer is correct! YOU WON!"));
-
-        // reset the game
-
-        // prompt for restart the game, or exit
-    }
-    else {
-        // check if number of letters matches
-        if (HiddenWord.Len() == Input.Len()){
-            PrintLine(TEXT("Word Length Matches, But Word Incorrect!"));
-            PrintLine(TEXT("Choose another word with the same length"));
-        }
-        else {
-            PrintLine(TEXT("Word length incorrect"));
-        }
-
-        // print a fail message, and user input 
-        PrintLine(TEXT("Incorrect Answer"));
-        PrintLine(TEXT("Word entered: %s"), *Input);
-
-        // deduct a life
-
-    }
     
-    PrintLine(TEXT("Please input another command"));
+    // Checking PlayerGuess
+    if(bGameOver){
+        PrintLine(TEXT("Press Enter to play again"));
+        EndGame();
+    }
+    else{
+        ProcessGuess(Input);
+        if (Input == HiddenWord){
+            PrintLine(TEXT("You have won!"));
+            EndGame();
+        }
+        else if (Input.Len() != HiddenWord.Len()){
+            PrintLine(TEXT("The hidden word is %i characters long, try again!"), HiddenWord.Len());
+        }
+        else if (Input.Len() == HiddenWord.Len()){
+            PrintLine(TEXT("Wrong word, but guess was correct length"));
 
-    if(DEBUG == 1){
+            if(Lives > 0){
+                DeductLife();
+            }
+            else{
+                PrintLine(TEXT("You have lost!"));
+                EndGame();
+            }
+        }
+        PrintLine(TEXT("Lives remaining: %i"), Lives);
+    }
+
+    if(DEBUG == true){
         DebugMsg();
     }
+
+    
+    // Check If Isogram
+    // Prompt To Guess Again
+    // Check Right Number Of Characters
+    // Prompt To Guess Again
+
+    // Remove Life
+
+    // Check If Lives > 0
+    // If Yes GuessAgain
+    // Show Lives Left
+    // If No Show GameOver and HiddenWord?
+    // Prompt To Play Again, Press Enter To Play Again?
+    // Check User Input
+    // PlayAgain Or Quit
 }
 
-void UBullCowCartridge::InitGame() {
-    DEBUG = 1;
-    HiddenWord = TEXT("bravo"); // set the winning word
-    Lives = HiddenWord.Len(); // set the number of guesses so far
+void UBullCowCartridge::SetupGame(){
+    DEBUG = false;
+    HiddenWord = TEXT("cakes");
+    Lives = HiddenWord.Len();
+    bGameOver = false;
+    WelcomeMsg();
 }
 
 void UBullCowCartridge::WelcomeMsg(){
-    PrintLine(TEXT("Welcome to the Bull Cow Game!"));
-    PrintLine(TEXT("Word is a %i letter isometric"), HiddenWord.Len());
-    PrintLine(TEXT("Please enter a word, and press Enter"));
+    // Welcoming The Player
+    PrintLine(TEXT("Welcome to Bull Cows!"));
+    PrintLine(TEXT("Guess the %i letter word!"), HiddenWord.Len());
+    PrintLine(TEXT("You have %i lives to guess"), Lives);
+    PrintLine(TEXT("Type in your guess and press enter"));
+
+    // Prompt Player For Guess
+}
+
+void UBullCowCartridge::ProcessGuess(FString Guess){
+    // Process a player guess
 }
 
 void UBullCowCartridge::DebugMsg(){
-    PrintLine("*** DEBUG ***");
-    
-    // Place all debug messages here
-    PrintLine(TEXT("Hidden word is: %s"), *HiddenWord);
-    PrintLine(TEXT("Lives remaining: %i"), Lives);
-    // End Debug messages
+    PrintLine(TEXT("The hidden word is: %s."), *HiddenWord);// Debug Line
+}
 
-    PrintLine("*** END DEBUG ***");
+void UBullCowCartridge::DeductLife(){
+    --Lives;
+    PrintLine(TEXT("Life lost."));
+}
 
+void UBullCowCartridge::EndGame(){
+    PrintLine(TEXT("Resetting game"));
+    SetupGame();
 }
