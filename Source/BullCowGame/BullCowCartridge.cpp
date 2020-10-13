@@ -18,24 +18,6 @@ void UBullCowCartridge::OnInput(const FString& Input){ // When the player hits e
     }
     else{
         ProcessGuess(Input);
-        if (Input == HiddenWord){
-            PrintLine(TEXT("You have won!"));
-            EndGame();
-        }
-        else if (Input.Len() != HiddenWord.Len()){
-            PrintLine(TEXT("The hidden word is %i characters long, try again!"), HiddenWord.Len());
-        }
-        else if (Input.Len() == HiddenWord.Len()){
-            PrintLine(TEXT("Wrong word, but guess was correct length"));
-
-            if(Lives > 0){
-                DeductLife();
-            }
-            else{
-                PrintLine(TEXT("You have lost!"));
-                EndGame();
-            }
-        }
         PrintLine(TEXT("Lives remaining: %i"), Lives);
     }
 
@@ -80,6 +62,24 @@ void UBullCowCartridge::WelcomeMsg(){
 
 void UBullCowCartridge::ProcessGuess(FString Guess){
     // Process a player guess
+    if (Guess == HiddenWord){
+        PrintLine(TEXT("You have won!"));
+        EndGame();
+    }
+    else if (Guess.Len() != HiddenWord.Len()){
+        PrintLine(TEXT("The hidden word is %i characters long, try again!"), HiddenWord.Len());
+    }
+    else if (Guess.Len() == HiddenWord.Len()){
+        PrintLine(TEXT("Wrong word, but guess was correct length"));
+        
+        if(Lives > 0){
+            DeductLife();
+        }
+        else{
+            PrintLine(TEXT("You have lost!"));
+            EndGame();
+        }
+    }
 }
 
 void UBullCowCartridge::DebugMsg(){
